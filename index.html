@@ -4,284 +4,905 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Catálogo de servicios | Update Soft</title>
+<meta name="description" content="Sistemas y páginas web para tu negocio: sistema para restaurantes, páginas web, invitaciones digitales y sistema de reservación. Cotiza el tuyo por WhatsApp.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f5b942'/%3E%3Ctext x='32' y='44' font-family='Arial,sans-serif' font-size='36' font-weight='bold' text-anchor='middle' fill='%231a1405'%3EU%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --bg: #0b0b0f; --card: #14141a; --card2: #1a1a21; --line: #26262f; --line-gold: rgba(245,185,66,.35);
+    --text: #f7f4ec; --muted: #cdc7ba; --dim: #97908a;
+    --gold: #f5b942; --gold-2: #e8a91c; --red: #ff5a3c; --green: #2f7d5b; --wa: #25d366; --check: #4ade80; --no: #ff6b6b;
+  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; background: #0f0f12; color: #f5f2ea; padding: 20px 16px 32px; }
-  .wrap { max-width: 560px; margin: 0 auto; }
-  header { text-align: center; margin-bottom: 8px; }
-  .brand { font-size: 13px; letter-spacing: 3px; color: #f5b942; font-weight: 700; text-transform: uppercase; }
-  h1 { font-size: 30px; line-height: 1.15; margin: 8px 0 4px; }
-  h1 span { color: #ff5a3c; }
-  .sub { font-size: 15px; color: #cfc9bd; line-height: 1.45; }
-  .sub b { color: #fff; }
+  html { scroll-behavior: smooth; }
+  body { font-family: "Inter", -apple-system, "Segoe UI", Roboto, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.55; -webkit-font-smoothing: antialiased; padding-top: 62px; }
+  h1, h2, h3, .price, .brand { font-family: "Sora", "Inter", Arial, sans-serif; }
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 18px 48px; }
+  a { color: var(--gold); }
+  ::selection { background: rgba(245,185,66,.35); }
 
-  /* Tabs */
-  .tabs { display: flex; gap: 8px; margin: 20px 0 6px; }
-  .tab-btn { flex: 1; background: #1c1c22; color: #cfc9bd; border: 1px solid #33333c; border-radius: 12px; padding: 12px 6px; font-size: 14px; font-weight: 700; cursor: pointer; text-align: center; line-height: 1.3; }
-  .tab-btn small { display: block; font-size: 11px; font-weight: 600; color: #8a8378; margin-top: 2px; }
-  .tab-btn.active { background: #f5b942; color: #1a1405; border-color: #f5b942; }
-  .tab-btn.active small { color: #5c4a12; }
-  .panel { display: none; }
-  .panel.active { display: block; }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+  .rise { animation: rise .7s ease both; }
+  .rise-1 { animation-delay: .08s; } .rise-2 { animation-delay: .16s; } .rise-3 { animation-delay: .24s; }
 
-  .note-top { background: #1c1c22; border: 1px solid #33333c; border-radius: 12px; padding: 12px 14px; font-size: 14px; line-height: 1.5; color: #d8d2c6; margin: 14px 0; }
-  .section-title { font-size: 13px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: #f5b942; margin: 24px 0 12px; text-align: center; }
-  .section-title span { display: block; font-size: 13px; letter-spacing: 0; text-transform: none; color: #b9b2a4; font-weight: 600; margin-top: 4px; }
-  .plan { border-radius: 16px; padding: 20px; margin-bottom: 16px; border: 2px solid #2c2c34; background: #17171c; }
-  .plan.pro { border-color: #f5b942; background: linear-gradient(180deg, #241c0d, #17171c 60%); position: relative; }
-  .plan.annual { border-color: #2f7d5b; }
-  .plan.annual.pro { border-color: #f5b942; background: linear-gradient(180deg, #241c0d, #17171c 60%); }
-  .plan.custom { border-style: dashed; }
-  .plan.premium { opacity: .92; border-style: dashed; }
-  .tag { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; margin-bottom: 10px; }
-  .tag.basic { background: #2c2c34; color: #e8e2d5; }
-  .tag.pro { background: #f5b942; color: #1a1405; }
-  .tag.annual { background: #2f7d5b; color: #eafff3; }
+  /* ---------- Topbar fija + hamburguesa ---------- */
+  .topbar { position: fixed; top: 0; left: 0; right: 0; z-index: 80; background: rgba(11,11,15,.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+  .topbar-inner { max-width: 1160px; margin: 0 auto; padding: 0 18px; height: 62px; display: flex; align-items: center; gap: 14px; }
+  .brand-mini { font-family: "Sora", Arial, sans-serif; font-weight: 800; font-size: 16px; letter-spacing: 2.5px; color: var(--gold); text-decoration: none; white-space: nowrap; }
+  .brand-mini small { display: block; font-size: 9.5px; letter-spacing: 2px; color: var(--dim); font-weight: 600; font-family: "Inter", Arial, sans-serif; }
+  .desk-nav { display: none; align-items: center; gap: 4px; margin-left: 8px; }
+  .desk-nav a { color: var(--muted); text-decoration: none; font-weight: 700; font-size: 13.5px; padding: 8px 11px; border-radius: 999px; white-space: nowrap; transition: color .15s ease, background .15s ease; }
+  .desk-nav a:hover { color: var(--gold); background: var(--card2); }
+  .top-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .cur-toggle { display: flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--card2); flex: 0 0 auto; }
+  .cur-toggle button { border: 0; background: transparent; color: var(--muted); font-family: "Inter", Arial, sans-serif; font-weight: 800; font-size: 13px; padding: 8px 13px; cursor: pointer; transition: background .15s ease, color .15s ease; }
+  .cur-toggle button.active { background: var(--gold); color: #1a1405; }
+  .top-actions .top-wa { display: none; }
+  .burger { width: 44px; height: 44px; border: 1px solid var(--line); background: var(--card2); border-radius: 12px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; flex: 0 0 auto; }
+  .burger span { display: block; width: 20px; height: 2.5px; background: var(--text); border-radius: 2px; transition: transform .25s ease, opacity .2s ease; }
+  .burger.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+  .burger.open span:nth-child(2) { opacity: 0; }
+  .burger.open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+  /* ---------- Drawer lateral ---------- */
+  .overlay { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,.6); opacity: 0; pointer-events: none; transition: opacity .3s ease; }
+  .overlay.show { opacity: 1; pointer-events: auto; }
+  .drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 95; width: min(330px, 86vw); background: #121218; border-left: 1px solid var(--line); padding: 20px 22px 28px; transform: translateX(105%); transition: transform .32s ease; overflow-y: auto; box-shadow: -18px 0 50px rgba(0,0,0,.5); }
+  .drawer.open { transform: translateX(0); }
+  .drawer-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .drawer-head .brand-mini { font-size: 15px; }
+  .drawer-close { width: 40px; height: 40px; border: 1px solid var(--line); background: var(--card2); color: var(--text); border-radius: 10px; font-size: 17px; cursor: pointer; }
+  .drawer nav { display: flex; flex-direction: column; margin-top: 14px; }
+  .drawer nav a { color: var(--text); text-decoration: none; font-weight: 700; font-size: 16.5px; padding: 13px 4px; border-bottom: 1px solid #232329; display: flex; justify-content: space-between; align-items: center; }
+  .drawer nav a span { color: var(--dim); font-weight: 400; font-size: 14px; }
+  .drawer nav a:hover { color: var(--gold); }
+  .drawer .drawer-cta { margin-top: 20px; }
+  .drawer .drawer-note { margin-top: 16px; font-size: 13px; color: var(--dim); line-height: 1.7; }
+
+  /* ---------- Hero ---------- */
+  header.hero { text-align: center; padding: 58px 8px 34px; position: relative; }
+  header.hero::before { content: ""; position: absolute; inset: -40px 0 auto; height: 340px; pointer-events: none;
+    background: radial-gradient(520px 220px at 50% 0%, rgba(245,185,66,.16), transparent 70%),
+                radial-gradient(420px 200px at 85% 10%, rgba(255,90,60,.10), transparent 70%); }
+  .brand { font-size: 14px; letter-spacing: 5px; color: var(--gold); font-weight: 800; text-transform: uppercase; position: relative; }
+  .brand small { display: block; letter-spacing: 2px; font-size: 11px; color: var(--dim); margin-top: 5px; font-weight: 600; font-family: "Inter", Arial, sans-serif; }
+  header.hero h1 { font-size: clamp(34px, 6vw, 56px); line-height: 1.08; margin: 18px 0 12px; letter-spacing: -0.5px; position: relative; }
+  header.hero h1 .grad { background: linear-gradient(92deg, var(--gold) 10%, #ffd97a 45%, var(--red) 95%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  header.hero p { font-size: 16px; color: var(--muted); max-width: 660px; margin: 0 auto; position: relative; }
+  header.hero p b { color: #fff; }
+  .hero-cta { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; position: relative; }
+  .hero-note { margin-top: 16px; font-size: 13px; color: var(--dim); position: relative; }
+  .hero-note b { color: var(--gold); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 18px; position: relative; }
+  .chip { font-size: 12.5px; font-weight: 700; color: var(--muted); background: var(--card2); border: 1px solid var(--line); padding: 6px 13px; border-radius: 999px; }
+  .chip b { color: var(--gold); }
+
+  /* ---------- Buttons ---------- */
+  .btn { display: inline-block; font-weight: 800; text-decoration: none; border-radius: 999px; padding: 14px 26px; font-size: 16px; line-height: 1.2; text-align: center; transition: transform .18s ease, filter .18s ease, box-shadow .18s ease; }
+  .btn:hover { transform: translateY(-2px); filter: brightness(1.06); }
+  .btn-wa { background: var(--wa); color: #062b16; box-shadow: 0 10px 26px rgba(37,211,102,.28); }
+  .btn-demo { background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 11px 18px; font-size: 14px; box-shadow: none; }
+  .btn-demo:hover { background: rgba(245,185,66,.12); }
+  .btn-sm { padding: 11px 20px; font-size: 14px; }
+  .btn-block { display: block; width: 100%; }
+  .wa-float { position: fixed; right: 18px; bottom: 18px; z-index: 70; width: 58px; height: 58px; border-radius: 50%; background: var(--wa); color: #062b16; display: flex; align-items: center; justify-content: center; font-size: 27px; text-decoration: none; box-shadow: 0 12px 30px rgba(37,211,102,.45); transition: transform .18s ease; }
+  .wa-float:hover { transform: scale(1.07); }
+
+  /* ---------- Sections ---------- */
+  section.block { padding: 52px 0 8px; scroll-margin-top: 78px; }
+  .eyebrow { font-size: 12px; font-weight: 800; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); text-align: center; }
+  .block h2 { font-size: clamp(26px, 4vw, 34px); line-height: 1.18; text-align: center; margin: 10px 0; letter-spacing: -0.3px; }
+  .block h2 span { color: var(--red); }
+  .lead { text-align: center; color: var(--muted); font-size: 15.5px; max-width: 700px; margin: 0 auto 26px; }
+  .lead b { color: #fff; }
+  .note { background: var(--card2); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; font-size: 14.5px; line-height: 1.6; color: #d8d2c6; margin: 0 auto 24px; max-width: 880px; }
+  .note b { color: #fff; }
+
+  /* ---------- Plan grid & cards ---------- */
+  .grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
+  .plan { border-radius: 20px; padding: 24px; border: 1.5px solid var(--line); background: linear-gradient(180deg, var(--card2), var(--card)); display: flex; flex-direction: column; box-shadow: 0 6px 24px rgba(0,0,0,.28); transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
+  .plan:hover { transform: translateY(-4px); border-color: rgba(245,185,66,.45); box-shadow: 0 16px 38px rgba(0,0,0,.4); }
+  .plan.pro { border-color: var(--gold); background: linear-gradient(180deg, #2a2010, var(--card) 55%); box-shadow: 0 0 0 1px rgba(245,185,66,.35), 0 18px 48px rgba(245,185,66,.12); position: relative; }
+  .plan.green { border-color: var(--green); }
+  .plan.dashed { border-style: dashed; }
+  .tag { display: inline-block; align-self: flex-start; font-size: 11.5px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; padding: 5px 13px; border-radius: 999px; margin-bottom: 13px; }
+  .tag.basic { background: var(--line); color: #e8e2d5; }
+  .tag.pro { background: var(--gold); color: #1a1405; }
+  .tag.green { background: var(--green); color: #eafff3; }
   .tag.custom { background: #3b3b46; color: #e8e2d5; }
-  .tag.premium { background: #123f3a; color: #7fe3d0; }
-  .plan h2 { font-size: 22px; }
-  .price { font-size: 38px; font-weight: 800; margin: 6px 0 2px; }
-  .price small { font-size: 16px; font-weight: 600; color: #b9b2a4; }
-  .per { font-size: 13px; color: #b9b2a4; margin-bottom: 12px; }
-  .gift { display: inline-block; background: #2f7d5b; color: #eafff3; font-size: 13px; font-weight: 700; padding: 5px 12px; border-radius: 999px; margin: 2px 0 10px; }
-  ul { list-style: none; }
-  li { font-size: 15px; line-height: 1.45; padding: 7px 0 7px 28px; position: relative; border-top: 1px solid #26262d; }
-  li::before { content: "✓"; position: absolute; left: 4px; color: #4ade80; font-weight: 800; }
-  li.no::before { content: "—"; color: #8a8378; }
-  li.no { color: #a49d90; }
-  .example { display: inline-block; margin-top: 12px; font-size: 14px; font-weight: 700; color: #f5b942; text-decoration: none; }
-  .example:hover { text-decoration: underline; }
-  .cta { text-align: center; margin-top: 20px; }
-  .cta a { display: inline-block; background: #25d366; color: #062b16; font-weight: 800; font-size: 18px; text-decoration: none; padding: 14px 26px; border-radius: 999px; }
-  .cta p { margin-top: 10px; font-size: 14px; color: #b9b2a4; line-height: 1.5; }
-  footer { text-align: center; font-size: 12px; color: #8a8378; margin-top: 22px; line-height: 1.6; }
+  .plan h3 { font-size: 22px; line-height: 1.25; letter-spacing: -0.2px; }
+  .plan .tagline { font-size: 14px; color: var(--muted); margin: 5px 0 14px; }
+  .price { font-size: 42px; font-weight: 800; line-height: 1.05; letter-spacing: -0.5px; }
+  .price small { font-size: 16px; font-weight: 600; color: var(--muted); font-family: "Inter", Arial, sans-serif; }
+  .price-usd { font-size: 15px; color: var(--muted); margin-top: 3px; }
+  .price-usd b { color: var(--gold); }
+  .per { font-size: 13px; color: var(--dim); margin: 7px 0 15px; }
+
+  .bill { background: #0e0e13; border: 1px solid var(--line); border-radius: 14px; padding: 13px 15px; margin-bottom: 15px; font-size: 14px; }
+  .bill .row { display: flex; justify-content: space-between; gap: 10px; padding: 4px 0; color: var(--muted); }
+  .bill .row span:last-child { white-space: nowrap; font-weight: 700; color: var(--text); text-align: right; }
+  .bill .row .usd { display: block; font-size: 12px; color: var(--dim); font-weight: 600; }
+  .bill .total { border-top: 1px solid var(--line); margin-top: 9px; padding-top: 10px; }
+  .bill .total span { color: #fff; font-weight: 800; }
+  .bill .total span:last-child { color: var(--gold); font-size: 17px; }
+  .bill .total .usd { color: var(--gold); font-size: 13px; }
+
+  ul.feat { list-style: none; margin-bottom: 16px; }
+  ul.feat li { font-size: 15px; line-height: 1.5; padding: 7px 0 7px 28px; position: relative; border-top: 1px solid #26262d; }
+  ul.feat li::before { content: "✓"; position: absolute; left: 4px; color: var(--check); font-weight: 800; }
+  ul.feat li b { color: #fff; }
+  ul.feat li.no { color: var(--dim); }
+  ul.feat li.no::before { content: "—"; color: var(--dim); }
+  .plan .actions { margin-top: auto; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+  .gift { display: inline-block; background: var(--green); color: #eafff3; font-size: 13px; font-weight: 700; padding: 6px 13px; border-radius: 999px; margin-bottom: 13px; }
+  .mini-note { font-size: 13px; color: var(--dim); line-height: 1.55; margin-top: 13px; }
+  .mini-note b { color: var(--muted); }
+
+  .payopts { background: #0e0e13; border: 1px solid var(--line); border-radius: 14px; padding: 13px 15px; margin-bottom: 15px; font-size: 14px; }
+  .payopts h4 { font-size: 12.5px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; font-family: "Inter", Arial, sans-serif; }
+  .payopts .row { display: flex; justify-content: space-between; gap: 10px; padding: 7px 0; border-top: 1px solid #26262d; color: var(--muted); }
+  .payopts .row:first-of-type { border-top: 0; }
+  .payopts .row b { color: #fff; white-space: nowrap; text-align: right; }
+  .payopts .row small { display: block; font-size: 12px; color: var(--dim); }
+
+  /* ---------- Comparison tables ---------- */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 16px; background: var(--card); margin: 0 auto 24px; max-width: 880px; }
+  table.compare { width: 100%; border-collapse: collapse; font-size: 14.5px; min-width: 620px; }
+  table.compare th, table.compare td { padding: 13px 16px; text-align: left; border-bottom: 1px solid #232329; vertical-align: top; }
+  table.compare tr:last-child th, table.compare tr:last-child td { border-bottom: 0; }
+  table.compare thead th { font-family: "Sora", Arial, sans-serif; font-size: 15px; background: var(--card2); }
+  table.compare thead th.hl { color: var(--gold); }
+  table.compare tbody th { color: var(--muted); font-weight: 600; width: 34%; }
+  table.compare td .yes { color: var(--check); font-weight: 700; }
+  table.compare td .no { color: var(--dim); }
+  table.compare td b { color: #fff; }
+  table.compare tr.us-row td { background: rgba(245,185,66,.07); }
+  table.compare tr.us-row td b { color: var(--gold); }
+
+  /* ---------- Cómo trabajamos ---------- */
+  .steps { display: grid; grid-template-columns: 1fr; gap: 16px; max-width: 980px; margin: 0 auto 8px; }
+  .step { position: relative; border: 1.5px solid var(--line); background: linear-gradient(180deg, var(--card2), var(--card)); border-radius: 18px; padding: 22px; }
+  .step .num { width: 44px; height: 44px; border-radius: 50%; background: var(--gold); color: #1a1405; font-family: "Sora", Arial, sans-serif; font-weight: 800; font-size: 19px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+  .step h3 { font-size: 18px; margin-bottom: 6px; }
+  .step p { font-size: 14.5px; color: var(--muted); line-height: 1.6; }
+  .step p b { color: #fff; }
+
+  /* ---------- Support ---------- */
+  .support-grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
+  .cover-grid { display: grid; grid-template-columns: 1fr; gap: 18px; max-width: 880px; margin: 0 auto 8px; }
+  .cover { border-radius: 18px; padding: 22px; border: 1.5px solid var(--line); background: var(--card); }
+  .cover.yes { border-color: rgba(74,222,128,.4); }
+  .cover.no { border-color: rgba(255,107,107,.35); }
+  .cover h3 { font-size: 18px; margin-bottom: 12px; }
+  .cover.yes h3 { color: var(--check); }
+  .cover.no h3 { color: var(--no); }
+  .cover ul { list-style: none; }
+  .cover ul li { font-size: 14.5px; line-height: 1.5; padding: 7px 0 7px 28px; position: relative; border-top: 1px solid #26262d; color: var(--muted); }
+  .cover.yes ul li::before { content: "✓"; position: absolute; left: 4px; color: var(--check); font-weight: 800; }
+  .cover.no ul li::before { content: "✕"; position: absolute; left: 4px; color: var(--no); font-weight: 800; }
+  .cover ul li b { color: #fff; }
+
+  /* ---------- FAQ ---------- */
+  .faq { max-width: 880px; margin: 0 auto; }
+  .faq details { border: 1px solid var(--line); background: var(--card); border-radius: 16px; margin-bottom: 12px; overflow: hidden; }
+  .faq summary { cursor: pointer; list-style: none; padding: 17px 20px; font-family: "Sora", Arial, sans-serif; font-weight: 700; font-size: 16px; display: flex; justify-content: space-between; align-items: center; gap: 14px; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: "+"; color: var(--gold); font-size: 22px; font-weight: 800; flex: 0 0 auto; transition: transform .2s ease; }
+  .faq details[open ] summary::after { transform: rotate(45deg); }
+  .faq details p { padding: 0 20px 18px; font-size: 14.5px; color: var(--muted); line-height: 1.65; }
+  .faq details p b { color: #fff; }
+
+  /* ---------- Closing ---------- */
+  .closing { text-align: center; padding: 54px 8px 12px; }
+  .closing h2 { font-size: clamp(26px, 4vw, 34px); line-height: 1.18; margin-bottom: 12px; }
+  .closing h2 span { color: var(--red); }
+  .closing p { color: var(--muted); font-size: 15.5px; max-width: 620px; margin: 0 auto 22px; }
+  .zones { font-size: 14px; color: var(--muted); margin-top: 18px; line-height: 1.75; }
+  .zones b { color: #fff; }
+  footer { text-align: center; font-size: 12.5px; color: var(--dim); margin-top: 30px; line-height: 1.8; border-top: 1px solid var(--line); padding-top: 20px; }
+  footer b { color: var(--gold); }
+
+  /* ---------- Desktop ---------- */
+  @media (max-width: 719px) {
+    .brand-mini small { display: none; }
+    .brand-mini { font-size: 14px; letter-spacing: 1.5px; }
+    .topbar-inner { gap: 8px; padding: 0 12px; }
+    .cur-toggle button { padding: 7px 10px; font-size: 12px; }
+    .burger { width: 40px; height: 40px; }
+  }
+  @media (min-width: 720px) {
+    .grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+    .support-grid, .cover-grid { grid-template-columns: repeat(2, 1fr); }
+    .steps { grid-template-columns: repeat(2, 1fr); }
+    .top-actions .top-wa { display: inline-block; }
+  }
+  @media (min-width: 1024px) {
+    .grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .steps { grid-template-columns: repeat(4, 1fr); }
+    header.hero { padding: 72px 8px 40px; }
+    .desk-nav { display: flex; }
+    .burger { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rise { animation: none; }
+    .plan, .btn, .wa-float, .drawer, .overlay { transition: none; }
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div class="brand">Update Soft</div>
-    <h1>Catálogo de servicios <span>✨</span></h1>
-    <p class="sub">Sistemas y páginas web para negocios pequeños. Elige el servicio que necesitas y <b>cotiza el tuyo por WhatsApp</b>.</p>
+
+<!-- ============ TOPBAR + MENÚ HAMBURGUESA ============ -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand-mini" href="#top">UPDATE SOFT<small>SISTEMAS Y PÁGINAS WEB</small></a>
+    <nav class="desk-nav" aria-label="Navegación principal">
+      <a href="#proceso">Cómo trabajamos</a>
+      <a href="#saas">Sistema SaaS</a>
+      <a href="#web">Páginas web</a>
+      <a href="#invitaciones">Invitaciones</a>
+      <a href="#reservacion">Reservación</a>
+      <a href="#soporte">Soporte</a>
+      <a href="#preguntas">Preguntas</a>
+    </nav>
+    <div class="top-actions">
+      <div class="cur-toggle" role="group" aria-label="Moneda de los precios">
+        <button type="button" data-cur="mxn" class="active" aria-pressed="true">MXN $</button>
+        <button type="button" data-cur="usd" aria-pressed="false">USD $</button>
+      </div>
+      <a class="btn btn-wa btn-sm top-wa" href="https://wa.me/5215517050861?text=Hola%2C%20me%20interesa%20un%20servicio%20de%20Update%20Soft">WhatsApp</a>
+      <button class="burger" id="burger" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="drawer"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer" aria-label="Menú" aria-hidden="true">
+  <div class="drawer-head">
+    <span class="brand-mini">UPDATE SOFT<small>SISTEMAS Y PÁGINAS WEB</small></span>
+    <button class="drawer-close" id="drawer-close" type="button" aria-label="Cerrar menú">✕</button>
+  </div>
+  <nav aria-label="Menú del catálogo">
+    <a href="#top">Inicio <span>↑</span></a>
+    <a href="#proceso">Cómo trabajamos <span>→</span></a>
+    <a href="#saas">Sistema SaaS <span>→</span></a>
+    <a href="#web">Páginas web <span>→</span></a>
+    <a href="#invitaciones">Invitaciones <span>→</span></a>
+    <a href="#reservacion">Reservación <span>→</span></a>
+    <a href="#soporte">Soporte <span>→</span></a>
+    <a href="#preguntas">Preguntas frecuentes <span>→</span></a>
+  </nav>
+  <div class="drawer-cta">
+    <a class="btn btn-wa btn-block" href="https://wa.me/5215517050861?text=Hola%2C%20me%20interesa%20un%20servicio%20de%20Update%20Soft">💬 Cotiza por WhatsApp</a>
+  </div>
+  <p class="drawer-note">📍 Nicolás Romero, Tlalnepantla, Villa del Carbón y CDMX<br>📱 WhatsApp 5517050861<br>Precios en MXN y USD</p>
+</aside>
+
+<div class="wrap" id="top">
+
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <div class="brand rise">Update Soft<small>Sistemas y páginas web para negocios</small></div>
+    <h1 class="rise rise-1">Tu negocio, con sistemas<br><span class="grad">que sí trabajan por ti</span></h1>
+    <p class="rise rise-2">Sistema para tu restaurante, tu página web, invitaciones digitales y reservas en línea. <b>Elige lo que necesitas y cotiza el tuyo por WhatsApp.</b></p>
+    <div class="hero-cta rise rise-3">
+      <a class="btn btn-wa" href="https://wa.me/5215517050861?text=Hola%2C%20me%20interesa%20un%20servicio%20de%20Update%20Soft">💬 Cotiza el tuyo por WhatsApp</a>
+    </div>
+    <div class="chips rise rise-3">
+      <span class="chip">✓ <b>Pago único</b> disponible</span>
+      <span class="chip">✓ Soporte directo con quien creó tu sistema</span>
+      <span class="chip">✓ Precios en MXN y USD</span>
+    </div>
+    <p class="hero-note" id="fx-line">Tipo de cambio: <b>$19.40 MXN por USD</b> · Actualizado 25 nov 2026</p>
+    <p class="hero-note" style="margin-top:4px;">Precios en pesos mexicanos (MXN) · Cambia entre MXN y USD con el botón de arriba; el precio en dólares se actualiza solo con el tipo de cambio del día</p>
   </header>
 
-  <nav class="tabs">
-    <button class="tab-btn active" data-tab="pos">🍽️ UPDATE POS<small>Sistema para restaurantes</small></button>
-    <button class="tab-btn" data-tab="sitios">💻 Sitios web<small>Para tu negocio</small></button>
-    <button class="tab-btn" data-tab="invitaciones">💌 Invitaciones<small>Digitales para eventos</small></button>
-  </nav>
-
-  <!-- ============ UPDATE POS ============ -->
-  <section class="panel active" id="panel-pos">
-    <div class="note-top">📱 <b>¿Cómo funciona?</b> Tu mesero toma el pedido en pantalla y lo manda directo a cocina. El cocinero lo prepara y lo marca listo. Al entregar, se cobra ahí mismo en efectivo o con tarjeta, con el cambio calculado solo. Y tú ves ventas, inventario, caja y a tu equipo en tiempo real.</div>
-
-    <div class="section-title">Pago mensual</div>
-
-    <section class="plan">
-      <span class="tag basic">Básico</span>
-      <h2>Para empezar ordenado</h2>
-      <div class="price">$499 <small>/ mes</small></div>
-      <div class="per">Precios en pesos mexicanos (MXN), pago mensual.</div>
-      <ul>
-        <li>Todo lo del sistema: POS para meseros, monitor de cocina, inventario con alertas de stock, cobro en efectivo o tarjeta con cambio, caja con fondo, saldo y arqueo, categorías, tickets y corte de caja</li>
-        <li>Hasta <b>50 platillos</b> en el menú</li>
-        <li>Hasta <b>5 perfiles</b> en total (incluyendo al admin), acceso por PIN para cada rol</li>
-        <li>Ticket normal de cada venta</li>
-        <li>Reporte de corte de caja, en su versión básica, con las limitaciones del plan</li>
-        <li>Soporte básico por WhatsApp, tiempo de atención de 48 a 72 horas</li>
-        <li class="no">Sin sección de eficiencia del personal</li>
-        <li class="no">Sin ticket histórico</li>
-      </ul>
-    </section>
-
-    <section class="plan pro">
-      <span class="tag pro">★ Pro — El completo</span>
-      <h2>Para crecer sin topes</h2>
-      <div class="price">$799 <small>/ mes</small></div>
-      <div class="per">Precios en pesos mexicanos (MXN), pago mensual.</div>
-      <ul>
-        <li><b>Todo lo del sistema, completo</b>, incluyendo eficiencia del personal y ticket histórico</li>
-        <li><b>Platillos ilimitados</b></li>
-        <li><b>Perfiles sin tope máximo</b></li>
-        <li>Reportes avanzados: qué vende más, a qué hora y dónde se pierde dinero</li>
-        <li>Soporte prioritario por WhatsApp, atención de 24 a 48 horas</li>
-        <li>Beneficios, promociones y actualizaciones futuras del sistema</li>
-        <li>Descuentos exclusivos por antigüedad</li>
-      </ul>
-    </section>
-
-    <div class="section-title">Pago anual <span>Paga 12 meses y te regalamos el mes 13 🎁</span></div>
-
-    <section class="plan annual">
-      <span class="tag annual">Básico anual</span>
-      <h2>Para empezar ordenado</h2>
-      <div class="price">$6,000 <small>/ año</small></div>
-      <div class="per">Te sale en $500 al mes. Precios en pesos mexicanos (MXN).</div>
-      <div class="gift">🎁 Mes 13 gratis por confiar en nosotros</div>
-      <ul>
-        <li>Todo lo del plan Básico mensual: hasta 50 platillos, hasta 5 perfiles en total (incluyendo al admin), ticket normal y reporte de corte en su versión básica</li>
-        <li><b>Entra a beneficios y promociones</b> por pagar anual</li>
-        <li>Soporte básico por WhatsApp, tiempo de atención de 48 a 72 horas</li>
-        <li class="no">Sin sección de eficiencia del personal</li>
-        <li class="no">Sin ticket histórico</li>
-        <li class="no">No incluye actualizaciones futuras del sistema</li>
-      </ul>
-    </section>
-
-    <section class="plan annual pro">
-      <span class="tag pro">★ Pro anual — El completo</span>
-      <h2>Para crecer sin topes</h2>
-      <div class="price">$9,600 <small>/ año</small></div>
-      <div class="per">Te sale en $800 al mes. Precios en pesos mexicanos (MXN).</div>
-      <div class="gift">🎁 Mes 13 gratis por confiar en nosotros</div>
-      <ul>
-        <li><b>Todo lo del sistema, completo</b>, incluyendo eficiencia del personal y ticket histórico</li>
-        <li><b>Platillos ilimitados</b></li>
-        <li><b>Perfiles sin tope máximo</b></li>
-        <li>Reportes avanzados: qué vende más, a qué hora y dónde se pierde dinero</li>
-        <li>Soporte prioritario por WhatsApp, atención de 24 a 48 horas</li>
-        <li>Beneficios, promociones y actualizaciones futuras del sistema</li>
-        <li>Descuentos exclusivos por antigüedad</li>
-      </ul>
-    </section>
-
-    <div class="section-title">¿Necesitas algo a tu medida?</div>
-
-    <section class="plan custom">
-      <span class="tag custom">Personalizado</span>
-      <h2>Configuración personal</h2>
-      <div class="price">A cotización</div>
-      <div class="per">Precio según lo que necesite tu negocio.</div>
-      <ul>
-        <li>Sistema configurado a tu medida, con lo que tu restaurante necesita</li>
-        <li>Cotización personal por WhatsApp, sin compromiso</li>
-      </ul>
-    </section>
-
-    <section class="plan premium">
-      <span class="tag premium">Próximamente</span>
-      <h2>Premium — $1,200 / mes</h2>
-      <div class="per">Todo lo del Pro + modo sin internet (offline).</div>
-      <ul>
-        <li>Se activa cuando esté listo el modo offline: el sistema sigue trabajando aunque se vaya el internet y sincroniza después</li>
-      </ul>
-    </section>
+  <!-- ============ CÓMO TRABAJAMOS ============ -->
+  <section class="block" id="proceso">
+    <div class="eyebrow">Así de fácil</div>
+    <h2>Cómo <span>trabajamos</span></h2>
+    <p class="lead">Sin vueltas y sin sorpresas: así es como tu proyecto llega a tus manos.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="num">1</div>
+        <h3>Cotiza por WhatsApp</h3>
+        <p>Cuéntanos qué necesitas y <b>te decimos cuánto cuesta, sin compromiso</b>.</p>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <h3>Confirmamos tu proyecto</h3>
+        <p>Te decimos <b>exactamente qué incluye, cuánto cuesta y cuándo queda listo</b>.</p>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <h3>Entregamos y publicamos</h3>
+        <p>Instalamos todo y te lo dejamos <b>funcionando, con tu capacitación inicial</b>.</p>
+      </div>
+      <div class="step">
+        <div class="num">4</div>
+        <h3>Soporte continuo</h3>
+        <p>Te acompañamos después de la entrega con el <b>Plan de Soporte</b>, con reglas claras.</p>
+      </div>
+    </div>
   </section>
 
-  <!-- ============ SITIOS WEB ============ -->
-  <section class="panel" id="panel-sitios">
-    <div class="note-top">💻 <b>Tu negocio en internet, como debe ser.</b> Un sitio web no es solo "estar en Google": es que el cliente te encuentre, vea lo que ofreces y te escriba. El precio es <b>pago único</b> y depende de cuántas páginas tenga tu sitio y de lo que necesites que haga: un sitio sencillo para presentarte no cuesta lo mismo que uno con catálogo, reservas o formularios.</div>
+  <!-- ============ SAAS ============ -->
+  <section class="block" id="saas">
+    <div class="eyebrow">Para restaurantes</div>
+    <h2>Sistema SaaS <span>UPDATE POS</span></h2>
+    <p class="lead">El sistema completo para tu restaurante, en <b>una sola versión, sin topes</b>: lo eliges por mes, por año o lo compras de una vez. Mientras mejor plan eliges, <b>más soporte y más beneficios</b> te llevas.</p>
+    <div class="note">📱 <b>¿Cómo funciona?</b> Tu mesero toma el pedido en pantalla y lo manda directo a cocina. El cocinero lo prepara y lo marca listo. Al entregar, se cobra ahí mismo en efectivo o con tarjeta, con el cambio calculado solo. Y tú ves ventas, inventario, caja y a tu equipo en tiempo real.</div>
 
-    <div class="section-title">Pago único — eliges el nivel</div>
+    <div class="grid cols-3">
+      <!-- Mensual -->
+      <section class="plan">
+        <span class="tag basic">Mensual</span>
+        <h3>Renta mensual</h3>
+        <p class="tagline">Empieza sin invertir fuerte</p>
+        <div class="price"><span class="pval" data-mxn="799" data-per=" / mes">$799 / mes</span></div>
+        <div class="price-usd"><b class="altval" data-mxn="799" data-per=" / mes">$41 USD / mes</b></div>
+        <div class="per">Pago mes a mes, cancela cuando quieras.</div>
+        <div class="bill">
+          <div class="row"><span>Renta del sistema</span><span><span class="pval" data-mxn="799" data-per=" / mes">$799 / mes</span><span class="usd"><span class="altval" data-mxn="799" data-per=" / mes">$41 USD / mes</span></span></span></div>
+          <div class="row"><span>Instalación</span><span><span class="pval" data-mxn="1999" data-per=" una vez">$1,999 una vez</span><span class="usd"><span class="altval" data-mxn="1999" data-per=" una vez">$103 USD una vez</span></span></span></div>
+          <div class="row total"><span>Total para empezar</span><span><span class="pval" data-mxn="2798">$2,798</span><span class="usd"><span class="altval" data-mxn="2798">$144 USD</span></span></span></div>
+        </div>
+        <ul class="feat">
+          <li><b>Todo el sistema, completo</b>: punto de venta, cocina, caja y cortes</li>
+          <li>Inventario e insumos con costos, recetas y <b>ganancia por platillo</b></li>
+          <li>Control de merma y devoluciones</li>
+          <li>Personal con acceso por PIN y categorías</li>
+          <li>Multi-divisa: cobra en MXN, USD, CAD, EUR o GBP</li>
+          <li>Reportes: qué vende más, a qué hora y dónde se pierde dinero</li>
+          <li>Platillos y perfiles <b>sin tope máximo</b></li>
+          <li><b>30 días de soporte incluidos</b>; después, Soporte Update Soft <span class="pval-lab" data-mxn="199" data-per="/mes">$199 MXN/mes</span></li>
+          <li class="no">Actualizaciones con funciones nuevas no incluidas</li>
+        </ul>
+        <div class="actions">
+          <a class="btn btn-wa btn-sm" href="https://wa.me/5215517050861?text=Hola%2C%20me%20interesa%20el%20sistema%20UPDATE%20POS%20en%20renta%20mensual">💬 Lo quiero mensual</a>
+        </div>
+      </section>
 
-    <section class="plan">
-      <span class="tag basic">Esencial</span>
-      <h2>Para tener presencia</h2>
-      <div class="price">Desde $1,999 <small>pago único</small></div>
-      <div class="per">Sitio de una sola página para presentar tu negocio. Precios en pesos mexicanos (MXN).</div>
-      <ul>
-        <li><b>1 página</b>: quién eres, qué ofreces y cómo contactarte</li>
-        <li>Diseño adaptable a celular, tablet y computadora</li>
-        <li>Botón directo a tu WhatsApp</li>
-        <li>Formulario de contacto básico</li>
-        <li>Entrega lista para publicarse</li>
-      </ul>
-      <a class="example" href="https://alejandro2892002.github.io/consultorio-dental.github.io/" target="_blank" rel="noopener">👉 Ver ejemplo: así puede quedar el tuyo</a>
-    </section>
+      <!-- Anual -->
+      <section class="plan pro">
+        <span class="tag pro">★ Anual — El más conveniente</span>
+        <h3>Renta anual</h3>
+        <p class="tagline">Paga 10 meses y te regalamos 2</p>
+        <div class="price"><span class="pval" data-mxn="7990" data-per=" / año">$7,990 / año</span></div>
+        <div class="price-usd"><b class="altval" data-mxn="7990" data-per=" / año">$412 USD / año</b></div>
+        <div class="per">Te sale en $666 al mes.</div>
+        <div class="gift">🎁 2 meses gratis por pagar el año</div>
+        <div class="bill">
+          <div class="row"><span>Renta del sistema (12 meses)</span><span><span class="pval" data-mxn="7990" data-per=" / año">$7,990 / año</span><span class="usd"><span class="altval" data-mxn="7990" data-per=" / año">$412 USD / año</span></span></span></div>
+          <div class="row"><span>Instalación</span><span><span class="pval" data-mxn="1999" data-per=" una vez">$1,999 una vez</span><span class="usd"><span class="altval" data-mxn="1999" data-per=" una vez">$103 USD una vez</span></span></span></div>
+          <div class="row total"><span>Total para empezar</span><span><span class="pval" data-mxn="9989">$9,989</span><span class="usd"><span class="altval" data-mxn="9989">$515 USD</span></span></span></div>
+        </div>
+        <ul class="feat">
+          <li><b>Todo lo del sistema, completo</b>, igual que el mensual</li>
+          <li>Inventario, recetas, merma, personal, multi-divisa y reportes</li>
+          <li>Platillos y perfiles <b>sin tope máximo</b></li>
+          <li><b>60 días de soporte incluidos</b> + prioridad 24 h</li>
+          <li><b>Actualizaciones con funciones nuevas incluidas</b></li>
+          <li><b>Beneficios y promociones exclusivas</b> por pagar anual</li>
+          <li>Descuentos por antigüedad</li>
+          <li>Después: Soporte Update Soft <span class="pval-lab" data-mxn="199" data-per="/mes">$199 MXN/mes</span> o <span class="pval-lab" data-mxn="1990" data-per="/año">$1,990 MXN/año</span></li>
+        </ul>
+        <div class="actions">
+          <a class="btn btn-wa btn-sm" href="https://wa.me/5215517050861?text=Hola%2C%20me%20interesa%20el%20sistema%20UPDATE%20POS%20en%20renta%20anual">💬 Lo quiero anual</a>
+        </div>
+      </section>
 
-    <section class="plan pro">
-      <span class="tag pro">★ Negocio — El más pedido</span>
-      <h2>Para que te encuentren y te escriban</h2>
-      <div class="price">Desde $4,999 <small>pago único</small></div>
-      <div class="per">Sitio de varias páginas para tu negocio. Precios en pesos mexicanos (MXN).</div>
-      <ul>
-        <li><b>Hasta 5 páginas</b>: inicio, servicios, galería, nosotros y contacto</li>
-        <li>Galería de fotos de tu negocio o tus productos</li>
-        <li>Mapa con tu ubicación y horarios</li>
-        <li>Formularios y botones de WhatsApp en cada sección</li>
-        <li>Optimización básica para que te encuentren en Google</li>
-        <li>Diseño adaptable a celular, tablet y computadora</li>
-      </ul>
-      <a class="example" href="https://alejandro2892002.github.io/" target="_blank" rel="noopener">👉 Ver ejemplo: menú digital interactivo</a>
-    </section>
+      <!-- Pago único -->
+      <section class="plan green">
+        <span class="tag green">Pago único — Es tuyo para siempre</span>
+        <h3>Compra del sistema</h3>
+        <p class="tagline">Un solo pago y deja de rentar</p>
+        <div class="price"><span class="pval" data-mxn="22900" data-per=" pago único">$22,900 pago único</span></div>
+        <div class="price-usd"><b class="altval" data-mxn="22900" data-per=" pago único">$1,180 USD pago único</b></div>
+        <div class="per">El sistema es tuyo. Solo pagas el hosting desde el 2º año.</div>
+        <div class="bill">
+          <div class="row"><span>Proyecto (sistema completo)</span><span><span class="pval" data-mxn="22900">$22,900</span><span class="usd"><span class="altval" data-mxn="22900">$1,180 USD</span></span></span></div>
+          <div class="row"><span>Instalación</span><span><span class="pval" data-mxn="1999" data-per=" una vez">$1,999 una vez</span><span class="usd"><span class="altval" data-mxn="1999" data-per=" una vez">$103 USD una vez</span></span></span></div>
+          <div class="row total"><span>Total de contado</span><span><span class="pval" data-mxn="24899">$24,899</span><span class="usd"><span class="altval" data-mxn="24899">$1,283 USD</span></span></span></div>
+        </div>
+        <div class="payopts">
+          <h4>O págalo en partes</h4>
+          <div class="row"><span><b>3 pagos</b><small>1er pago <span class="pval" data-mxn="9989">$9,989</span> (<span class="altval" data-mxn="9989">$515 USD</span>), luego 2 × <span class="pval" data-mxn="7990">$7,990</span> (<span class="altval" data-mxn="7990">$412 USD</span>)</small></span><b><span class="pval" data-mxn="25969">$25,969</span><small style="display:block;font-size:12px;color:var(--dim);font-weight:600;"><span class="altval" data-mxn="25969">$1,339 USD</span></small></b></div>
+          <div class="row"><span><b>6 pagos</b><small>1er pago <span class="pval" data-mxn="6149">$6,149</span> (<span class="altval" data-mxn="6149">$317 USD</span>), luego 5 × <span class="pval" data-mxn="4150">$4,150</span> (<span class="altval" data-mxn="4150">$214 USD</span>)</small></span><b><span class="pval" data-mxn="26899">$26,899</span><small style="display:block;font-size:12px;color:var(--dim);font-weight:600;"><span class="altval" data-mxn="26899">$1,387 USD</span></small></b></div>
+        </div>
+        <ul class="feat">
+          <li><b>Todo el sistema, completo</b>, igual que en renta</li>
+          <li>Platillos y perfiles <b>sin tope máximo</b></li>
+          <li><b>90 días de soporte incluidos</b> + prioridad 24 h</li>
+          <li><b>Actualizaciones con funciones nuevas incluidas</b></li>
+          <li><b>Beneficios y promociones exclusivas</b></li>
+          <li>Hosting: <b>1er año gratis</b>, luego <span class="pval" data-mxn="1500" data-per=" / año">$1,500 MXN / año</span> (<span class="altval" data-mxn="1500" data-per=" / año">$77 USD / año</span>)</li>
+          <li>Después de los 90 días: Soporte Update Soft <span class="pval-lab" data-mxn="199" data-per="/mes">$199 MXN/mes</span> o <span class="pval-lab" data-mxn="1990" data-per="/año">$1,990 MXN/año</span></li>
+        </ul>
+        <div class="actions">
+          <a class="btn btn-wa btn-sm" href="https://wa.me/5215517050861?text=Hola%2C%20me%20interesa%20comprar%20el%20sistema%20UPDATE%20POS%20de%20una%20vez">💬 Lo quiero comprar</a>
+        </div>
+      </section>
+    </div>
 
-    <section class="plan custom">
-      <span class="tag custom">A medida</span>
-      <h2>Cuando tu sitio tiene que hacer más</h2>
-      <div class="price">A cotización</div>
-      <div class="per">Precio según la complejidad y las funcionalidades. Pago único.</div>
-      <ul>
-        <li>Sitio con <b>funciones interactivas</b>: contenido que se mueve, menús, catálogos, filtros y más</li>
-        <li>Funcionalidades a tu medida: reservas, cotizadores, catálogos de productos, galerías interactivas</li>
-        <li>Lo que tu negocio necesita, sin pagar por lo que no vas a usar</li>
-        <li>Cotización personal por WhatsApp, sin compromiso</li>
-      </ul>
-    </section>
+    <!-- Tabla comparativa SaaS -->
+    <div class="table-wrap" style="margin-top:22px;">
+      <table class="compare">
+        <thead>
+          <tr><th>Compara los planes</th><th>Mensual</th><th class="hl">Anual ★</th><th>Pago único</th></tr>
+        </thead>
+        <tbody>
+          <tr><th>Precio</th><td><b><span class="pval" data-mxn="799">$799</span></b> / mes</td><td><b><span class="pval" data-mxn="7990">$7,990</span></b> / año</td><td><b><span class="pval" data-mxn="22900">$22,900</span></b> una vez</td></tr>
+          <tr><th>Instalación</th><td><span class="pval" data-mxn="1999">$1,999</span> una vez</td><td><span class="pval" data-mxn="1999">$1,999</span> una vez</td><td><span class="pval" data-mxn="1999">$1,999</span> una vez</td></tr>
+          <tr><th>Soporte incluido</th><td><b>30 días</b></td><td><b>60 días</b></td><td><b>90 días</b></td></tr>
+          <tr><th>Prioridad 24 h</th><td><span class="no">—</span></td><td><span class="yes">✓ Incluida</span></td><td><span class="yes">✓ Incluida</span></td></tr>
+          <tr><th>Actualizaciones con funciones nuevas</th><td><span class="no">No incluidas</span></td><td><span class="yes">✓ Incluidas</span></td><td><span class="yes">✓ Incluidas</span></td></tr>
+          <tr><th>Beneficios y promociones exclusivas</th><td><span class="no">—</span></td><td><span class="yes">✓ Sí</span></td><td><span class="yes">✓ Sí</span></td></tr>
+          <tr><th>Después del periodo incluido</th><td>Soporte <span class="pval" data-mxn="199">$199</span> / mes</td><td>Soporte <span class="pval" data-mxn="199">$199</span> / mes o <span class="pval" data-mxn="1990">$1,990</span> / año</td><td>Soporte <span class="pval" data-mxn="199">$199</span> / mes o <span class="pval" data-mxn="1990">$1,990</span> / año</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- SaaS vs competencia -->
+    <div class="table-wrap">
+      <table class="compare">
+        <thead>
+          <tr><th>UPDATE POS contra la competencia</th><th>Precio mensual</th><th>Qué te llevas</th></tr>
+        </thead>
+        <tbody>
+          <tr><th>Soft Restaurant (Cloud Lite)</th><td><span class="pval" data-mxn="699" data-per=" +IVA / mes">$699 +IVA / mes</span></td><td>Solo 2 dispositivos; los módulos se cobran aparte</td></tr>
+          <tr><th>Poster POS (completo)</th><td>~<span class="pval" data-mxn="1044" data-per=" / mes">$1,044 / mes</span></td><td>Plan Mini + pantalla de cocina + sitio de pedidos, cada cosa por su lado</td></tr>
+          <tr><th>Parrot</th><td><span class="pval" data-mxn="949" data-per=" / mes">$949 / mes</span></td><td>Con terminal; lo demás se cotiza aparte</td></tr>
+          <tr class="us-row"><th>UPDATE POS</th><td><b><span class="pval" data-mxn="799" data-per=" / mes">$799 / mes</span></b></td><td><b>Todo incluido: punto de venta, cocina, caja, inventario, recetas, merma, personal y reportes — sin tope de equipos ni módulos aparte</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="mini-note" style="text-align:center;">Precios publicados por cada proveedor, nov 2026. Los precios de la competencia no incluyen IVA.</p>
+
+    <div class="grid" style="margin-top:18px;">
+      <section class="plan dashed">
+        <span class="tag custom">A medida</span>
+        <h3>¿Necesitas algo a tu medida?</h3>
+        <p class="tagline">Sistema configurado para lo que tu restaurante necesita</p>
+        <div class="price">Desde <span class="pval" data-mxn="29900" data-per=" pago único">$29,900 pago único</span></div>
+        <div class="price-usd"><b>Desde <span class="altval" data-mxn="29900" data-per=" pago único">$1,541 USD pago único</span></b></div>
+        <div class="per">Precio según lo que necesite tu negocio. Cotización personal por WhatsApp, sin compromiso.</div>
+        <div class="actions">
+          <a class="btn btn-wa btn-sm" href="https://wa.me/5215517050861?text=Hola%2C%20quiero%20cotizar%20un%20sistema%20a%20la%20medida%20para%20mi%20restaurante">💬 Cotizar a medida</a>
+        </div>
+      </section>
+    </div>
+    <p class="mini-note">💡 <b>El soporte es parte del servicio, no un favor:</b> dar soporte toma tiempo de una persona real, por eso cada plan trae sus días incluidos y después se contrata el Plan de Soporte. Así tu sistema siempre tiene a alguien que responda.</p>
+  </section>
+
+  <!-- ============ PÁGINAS WEB ============ -->
+  <section class="block" id="web">
+    <div class="eyebrow">Para tu negocio</div>
+    <h2>Páginas web <span>profesionales</span></h2>
+    <p class="lead">Tu negocio en internet, como debe ser: que el cliente te encuentre, vea lo que ofreces y te escriba. <b>Pago único</b>, sin mensualidades del sitio.</p>
+
+    <div class="grid">
+      <!-- Básica -->
+      <section class="plan">
+        <span class="tag basic">Básica</span>
+        <h3>Para tener presencia</h3>
+        <p class="tagline">Tu negocio en internet, rápido y bonito</p>
+        <div class="price"><span class="pval" data-mxn="2999" data-per=" pago único">$2,999 pago único</span></div>
+        <div class="price-usd"><b class="altval" data-mxn="2999" data-per=" pago único">$155 USD pago único</b></div>
+        <div class="per">Precio del proyecto. La instalación se cobra aparte (ver abajo).</div>
+        <div class="bill">
+          <div class="row"><span>Proyecto (1 página)</span><span><span class="pval" data-mxn="2999">$2,999</span><span class="usd"><span class="altval" data-mxn="2999">$155 USD</span></span></span></div>
+          <div class="row"><span>Instalación y publicación</span><span><span class="pval" data-mxn="999" data-per=" una vez">$999 una vez</span><span class="usd"><span class="altval" data-mxn="999" data-per=" una vez">$51 USD una vez</span></span></span></div>
+          <div class="row total"><span>Total</span><span><span class="pval" data-mxn="3998">$3,998</span><span class="usd"><span class="altval" data-mxn="3998">$206 USD</span></span></span></div>
+        </div>
+        <ul class="feat">
+          <li><b>1 página</b>: quién eres, qué ofreces y cómo contactarte</li>
+          <li>Diseño adaptable a celular, tablet y computadora</li>
+          <li>Botón directo a tu WhatsApp</li>
+          <li>Mapa con tu ubicación</li>
+          <li>Dominio y hosting del 1er año incluidos</li>
+          <li><b>30 días de soporte incluidos</b>; después, Soporte Update Soft <span class="pval-lab" data-mxn="199" data-per="/mes">$199 MXN/mes</span></li>
+        </ul>
+        <div class="actions">
+          <a class="btn btn-demo" href="https://alejandro2892002.github.io/consultorio-dental.github.io/" target="_blank" rel="noopener">👉 Ver demo en vivo: consultorio dental</a>
+          <a class="btn btn-wa btn-sm" href="https://wa.me/5215517050861?text=Hola%2C%20quiero%20una%20p%C3%A1gina%20web%20b%C3%A1sica%20para%20mi%20negocio">💬 La quiero básica</a>
+        </div>
+      </section>
+
+      <!-- Elite -->
+      <section class="plan pro">
+        <span class="tag pro">★ Elite — La más pedida</span>
+        <h3>Para que te encuentren y te escriban</h3>
+        <p class="tagline">Tu sitio completo, con todo lo que vende</p>
+        <div class="price"><span class="pval" data-mxn="7999" data-per=" pago único">$7,999 pago único</span></div>
+        <div class="price-usd"><b class="altval" data-mxn="7999" data-per=" pago único">$412 USD pago único</b></div>
+        <div class="per">Precio del proyecto. La instalación se cobra aparte (ver abajo).</div>
+        <div class="bill">
+          <div class="row"><span>Proyecto (hasta 5 páginas)</span><span><span class="pval" data-mxn="7999">$7,999</span><span class="usd"><span class="altval" data-mxn="7999">$412 USD</span></span></span></div>
+          <div class="row"><span>Instalación y publicación</span><span><span class="pval" data-mxn="1499" data-per=" una vez">$1,499 una vez</span><span class="usd"><span class="altval" data-mxn="1499" data-per=" una vez">$77 USD una vez</span></span></span></div>
+          <div class="row total"><span>Total</span><span><span class="pval" data-mxn="9498">$9,498</span><span class="usd"><span class="altval" data-mxn="9498">$490 USD</span></span></span></div>
+        </div>
+        <ul class="feat">
+          <li><b>Hasta 5 páginas</b>: inicio, servicios, galería, nosotros y contacto</li>
+          <li>Galería de fotos de tu negocio o tus productos</li>
+          <li>Mapa con tu ubicación y horarios</li>
+          <li>Formularios y botones de WhatsApp en cada sección</li>
+          <li>Optimización básica para que te encuentren en Google</li>
+          <li>Diseño adaptable a celular, tablet y computadora</li>
+          <li>Dominio y hosting del 1er año incluidos</li>
+          <li><b>30 días de soporte incluidos</b>; después, Soporte Update Soft <span class="pval-lab" data-mxn="199" data-per="/mes">$199 MXN/mes</span></li>
+        </ul>
+        <div class="actions">
+          <a class="btn btn-demo" href="https://alejandro2892002.github.io/" target="_blank" rel="noopener">👉 Ver demo en vivo: menú digital interactivo</a>
+          <a class="btn btn-wa btn-sm" href="https://wa.me/5215517050861?text=Hola%2C%20quiero%20una%20p%C3%A1gina%20web%20elite%20para%20mi%20negocio">💬 La quiero elite</a>
+        </div>
+      </section>
+    </div>
+
+    <div class="grid" style="margin-top:18px;">
+      <section class="plan dashed">
+        <span class="tag custom">A medida</span>
+        <h3>Cuando tu sitio tiene que hacer más</h3>
+        <p class="tagline">Funciones interactivas, catálogos, reservas y más</p>
+        <div class="price">Desde <span class="pval" data-mxn="14999" data-per=" pago único">$14,999 pago único</span></div>
+        <div class="price-usd"><b>Desde <span class="altval" data-mxn="14999" data-per=" pago único">$773 USD pago único</span></b></div>
+        <div class="per">Precio según la complejidad y las funcionalidades. Cotización personal por WhatsApp, sin compromiso.</div>
+        <div class="actions">
+          <a class="btn btn-wa btn-sm" href="https://wa.me/5215517050861?text=Hola%2C%20quiero%20cotizar%20una%20p%C3%A1gina%20web%20a%20la%20medida">💬 Cotizar a medida</a>
+        </div>
+      </section>
+      <section class="plan">
+        <span class="tag basic">Cada año</span>
+        <h3>Renovación de dominio y hosting</h3>
+        <p class="tagline">Tu sitio sigue en línea, año con año</p>
+        <div class="price"><span class="pval" data-mxn="799" data-per=" / año">$799 / año</span></div>
+        <div class="price-usd"><b class="altval" data-mxn="799" data-per=" / año">$41 USD / año</b></div>
+        <div class="per">Se paga desde el 2º año. El 1er año va incluido en tu proyecto.</div>
+        <ul class="feat">
+          <li>Tu dominio (tu nombre en internet) renovado</li>
+          <li>Tu hosting (donde vive tu página) renovado</li>
+          <li>Tu sitio sigue publicado sin interrupciones</li>
+        </ul>
+        <p class="mini-note">💡 <b>Soporte después de los 30 días incluidos:</b> Plan de Soporte Update Soft, <span class="pval-lab" data-mxn="199" data-per="/mes">$199 MXN/mes</span> (<span class="altval" data-mxn="199" data-per=" / mes">$10 USD / mes</span>). Cambios de textos y fotos, ayuda por WhatsApp y revisión de tu sitio.</p>
+      </section>
+    </div>
   </section>
 
   <!-- ============ INVITACIONES ============ -->
-  <section class="panel" id="panel-invitaciones">
-    <div class="note-top">💌 <b>Tu invitación, en el celular de tus invitados.</b> Nada de tarjetas de papel que se pierden ni mensajes que se entierran en WhatsApp: tu invitación se abre con un enlace, sin que nadie descargue ninguna app. <b>Pago único</b> por evento.</div>
+  <section class="block" id="invitaciones">
+    <div class="eyebrow">Bodas · XV años · Eventos</div>
+    <h2>Invitaciones <span>digitales</span></h2>
+    <p class="lead">Tu invitación en el celular de tus invitados: se abre con un enlace, sin que nadie descargue ninguna app. <b>Pago único por evento.</b></p>
 
-    <div class="section-title">Pago único por evento</div>
+    <div class="grid">
+      <!-- Básico -->
+      <section class="plan">
+        <span class="tag basic">Básico</span>
+        <h3>Tu evento, sin complicaciones</h3>
+        <p class="tagline">Bonita, clara y lista para compartir</p>
+        <div class="price"><span class="pval" data-mxn="599" data-per=" pago único">$599 pago único</span></div>
+        <div class="price-usd"><b class="altval" data-mxn="599" data-per=" pago único">$31 USD pago único</b></div>
+        <div class="per">Precio del proyecto. La publicación se cobra aparte (ver abajo).</div>
+        <div class="bill">
+          <div class="row"><span>Proyecto (invitación)</span><span><span class="pval" data-mxn="599">$599</span><span class="usd"><span class="altval" data-mxn="599">$31 USD</span></span></span></div>
+          <div class="row"><span>Publicación en línea</span><span><span class="pval" data-mxn="100" data-per=" una vez">$100 una vez</span><span class="usd"><span class="altval" data-mxn="100" data-per=" una vez">$5 USD una vez</span></span></span></div>
+          <div class="row total"><span>Total</span><span><span class="pval" data-mxn="699">$699</span><span class="usd"><span class="altval" data-mxn="699">$36 USD</span></span></span></div>
+        </div>
+        <ul class="feat">
+          <li>Portada con el nombre y la fecha de tu evento</li>
+          <li><b>Cuenta regresiva</b> en vivo hasta el gran día</li>
+          <li>Ceremonia y fiesta con <b>mapa</b> para llegar</li>
+          <li><b>Confirmación en línea</b> de tus invitados</li>
+          <li>Se comparte por WhatsApp con un enlace</li>
+        </ul>
+        <div class="actions">
+          <a class="btn btn-wa btn-sm" href="https://wa.me/5215517050861?text=Hola%2C%20quiero%20una%20invitaci%C3%B3n%20digital%20b%C3%A1sica%20para%20mi%20evento">💬 La quiero básica</a>
+        </div>
+      </section>
 
-    <section class="plan">
-      <span class="tag basic">Básica</span>
-      <h2>Lo esencial de tu evento</h2>
-      <div class="price">$499 <small>pago único</small></div>
-      <div class="per">Para XV años, bodas y eventos. Precios en pesos mexicanos (MXN).</div>
-      <ul>
-        <li>Portada con el nombre y la fecha de tu evento</li>
-        <li><b>Cuenta regresiva</b> en vivo hasta el gran día</li>
-        <li>Ceremonia y fiesta con <b>mapa</b> para llegar</li>
-        <li><b>Confirmación en línea</b> de tus invitados</li>
-        <li>Se abre con un enlace, sin descargar ninguna app</li>
-      </ul>
-    </section>
-
-    <section class="plan pro">
-      <span class="tag pro">★ Premium — La completa</span>
-      <h2>Tu evento como se merece</h2>
-      <div class="price">$999 <small>pago único</small></div>
-      <div class="per">Para XV años, bodas y eventos. Precios en pesos mexicanos (MXN).</div>
-      <ul>
-        <li><b>Todo lo de la Básica</b>: portada, cuenta regresiva, ceremonia y fiesta con mapa, confirmación en línea</li>
-        <li><b>Galería de fotos</b> de los festejados</li>
-        <li><b>Música</b> de fondo en tu invitación</li>
-        <li><b>Mesa de regalos</b> con tus datos</li>
-        <li><b>Código de vestimenta</b> para tus invitados</li>
-        <li>Diseño personalizado con tus colores y tu estilo</li>
-      </ul>
-    </section>
-
-    <div class="note-top">✨ <b>¿Quieres ver cómo se ve una?</b> Pídeme el ejemplo por WhatsApp y te muestro una invitación de XV años completa, para que veas exactamente cómo quedaría la tuya.</div>
-    <a class="example" href="https://aleing28.github.io/invitaci-nxv/" target="_blank" rel="noopener">👉 Ver ejemplo: invitación de XV años</a>
+      <!-- Premium -->
+      <section class="plan pro">
+        <span class="tag pro">★ Premium — La completa</span>
+        <h3>Tu evento como se merece</h3>
+        <p class="tagline">Con todo el cariño y todos los detalles</p>
+        <div class="price"><span class="pval" data-mxn="1299" data-per=" pago único">$1,299 pago único</span></div>
+        <div class="price-usd"><b class="altval" data-mxn="1299" data-per=" pago único">$67 USD pago único</b></div>
+        <div class="per">Precio del proyecto. La publicación se cobra aparte (ver abajo).</div>
+        <div class="bill">
+          <div class="row"><span>Proyecto (invitación)</span><span><span class="pval" data-mxn="1299">$1,299</span><span class="usd"><span class="altval" data-mxn="1299">$67 USD</span></span></span></div>
+          <div class="row"><span>Publicación en línea</span><span><span class="pval" data-mxn="200" data-per=" una vez">$200 una vez</span><span class="usd"><span class="altval" data-mxn="200" data-per=" una vez">$10 USD una vez</span></span></span></div>
+          <div class="row total"><span>Total</span><span><span class="pval" data-mxn="1499">$1,499</span><span class="usd"><span class="altval" data-mxn="1499">$77 USD</span></span></span></div>
+        </div>
+        <ul class="feat">
+          <li><b>Todo lo de la Básica</b>: portada, cuenta regresiva, ceremonia y fiesta con mapa, confirmación en línea</li>
+          <li><b>Galería de fotos</b> de los festejados</li>
+          <li><b>Música</b> de fondo en tu invitación</li>
+          <li><b>Mesa de regalos</b> con tus datos</li>
+          <li><b>Código de vestimenta</b> para tus invitados</li>
+          <li>Diseño personalizado con tus colores y tu estilo</li>
+        </ul>
+        <div class="actions">
+          <a class="btn btn-demo" href="https://aleing28.github.io/invitaci-nxv/" target="_blank" rel="noopener">👉 Ver demo en vivo: invitación de XV años</a>
+          <a class="btn btn-wa btn-sm" href="https://wa.me/5215517050861?text=Hola%2C%20quiero%20una%20invitaci%C3%B3n%20digital%20premium%20para%20mi%20evento">💬 La quiero premium</a>
+        </div>
+      </section>
+    </div>
+    <p class="mini-note" style="text-align:center;">💡 <b>Soporte y cambios incluidos hasta el día de tu evento:</b> si algo cambia (lugar, hora, foto), lo ajustamos sin costo extra. Después del evento no hay mensualidad: tu invitación es tuya.</p>
   </section>
 
-  <div class="cta">
-    <a href="https://wa.me/5215517050861?text=Hola%2C%20me%20interesa%20un%20servicio%20de%20Update%20Soft">💬 Cotiza el tuyo por WhatsApp</a>
-    <p>Update Soft — Sistemas y páginas web para negocios pequeños.<br>📍 Estado de México / CDMX · WhatsApp 5517050861</p>
-  </div>
+  <!-- ============ RESERVACIÓN ============ -->
+  <section class="block" id="reservacion">
+    <div class="eyebrow">Boutiques · Estéticas · Salones</div>
+    <h2>Sistema de <span>reservación</span></h2>
+    <p class="lead">Tu negocio con reservas en línea: tus clientas reservan solas, te llega todo ordenado y dejas la libreta atrás. <b>Una sola versión, pago único.</b></p>
 
-  <footer>Los planes y precios pueden cambiar; confirma la cotización por WhatsApp antes de contratar.<br>Los ejemplos mostrados son muestras de lo que Update Soft puede construir para tu negocio.</footer>
+    <div class="grid">
+      <section class="plan pro">
+        <span class="tag pro">★ Única versión — Pago único</span>
+        <h3>Tu negocio con reservas en línea</h3>
+        <p class="tagline">El sistema completo, es tuyo para siempre</p>
+        <div class="price"><span class="pval" data-mxn="2500" data-per=" pago único">$2,500 pago único</span></div>
+        <div class="price-usd"><b class="altval" data-mxn="2500" data-per=" pago único">$129 USD pago único</b></div>
+        <div class="per">Precio del proyecto. La instalación se cobra aparte (ver abajo).</div>
+        <div class="bill">
+          <div class="row"><span>Proyecto (sistema completo)</span><span><span class="pval" data-mxn="2500">$2,500</span><span class="usd"><span class="altval" data-mxn="2500">$129 USD</span></span></span></div>
+          <div class="row"><span>Instalación y puesta en marcha</span><span><span class="pval" data-mxn="500" data-per=" una vez">$500 una vez</span><span class="usd"><span class="altval" data-mxn="500" data-per=" una vez">$26 USD una vez</span></span></span></div>
+          <div class="row total"><span>Total</span><span><span class="pval" data-mxn="3000">$3,000</span><span class="usd"><span class="altval" data-mxn="3000">$155 USD</span></span></span></div>
+        </div>
+        <ul class="feat">
+          <li><b>Sitio público</b> con tus servicios, precios y galería</li>
+          <li><b>Código QR</b> de tu negocio: tu clienta escanea y reserva sola</li>
+          <li>Reservas que te llegan por <b>WhatsApp, ya ordenadas</b></li>
+          <li><b>Panel privado</b> con tus reservas, tus visitas y lo que más les interesa a tus clientas</li>
+          <li>Un asistente que atiende a tus clientas y te dice qué servicio es el más pedido</li>
+          <li><b>Reportes</b> de tu negocio para ver cómo vas</li>
+          <li>Tu negocio en Google Maps para que te encuentren</li>
+          <li><b>30 días de soporte incluidos</b>; después, Soporte Update Soft <span class="pval-lab" data-mxn="199" data-per="/mes">$199 MXN/mes</span></li>
+        </ul>
+        <div class="actions">
+          <a class="btn btn-demo" href="https://luna-boutique.manueling-2002.workers.dev/" target="_blank" rel="noopener">👉 Ver demo en vivo: Luna Boutique</a>
+          <a class="btn btn-wa btn-sm" href="https://wa.me/5215517050861?text=Hola%2C%20me%20interesa%20el%20sistema%20de%20reservaci%C3%B3n%20para%20mi%20negocio">💬 Lo quiero para mi negocio</a>
+        </div>
+      </section>
+
+      <section class="plan">
+        <span class="tag basic">¿Por qué te conviene?</span>
+        <h3>Se paga solo en meses</h3>
+        <p class="tagline">Sin mensualidad, sin comisiones por cita</p>
+        <div class="note" style="margin:0 0 14px;">📅 Las agendas de otros lados cobran <b><span class="pval" data-mxn="499" data-per=" / mes">$499 MXN / mes</span></b> o más, para siempre, y algunas se quedan con comisión por cada clienta nueva. Con este sistema pagas <b>una sola vez <span class="pval" data-mxn="3000">$3,000</span></b> y es tuyo: en ~6 meses ya te salió más barato que rentar una agenda, y después <b>no pagas nada más</b>.</div>
+        <ul class="feat">
+          <li>Sin mensualidad: el sistema es tuyo</li>
+          <li>Sin comisiones por cita ni por clienta nueva</li>
+          <li>Tus clientas reservan solas, a cualquier hora</li>
+          <li>Dejas de perder citas en la libreta</li>
+        </ul>
+        <p class="mini-note">💡 <b>Soporte después de los 30 días incluidos:</b> Plan de Soporte Update Soft, <span class="pval-lab" data-mxn="199" data-per="/mes">$199 MXN/mes</span> (<span class="altval" data-mxn="199" data-per=" / mes">$10 USD / mes</span>). Cambios de servicios y precios, ayuda por WhatsApp y revisión de tu sitio.</p>
+      </section>
+    </div>
+  </section>
+
+  <!-- ============ SOPORTE ============ -->
+  <section class="block" id="soporte">
+    <div class="eyebrow">Acompañamiento continuo</div>
+    <h2>Plan de <span>soporte</span></h2>
+    <p class="lead">El soporte es trabajo de una persona real, por eso se cobra aparte y con reglas claras: <b>si algo falla o necesitas un cambio, te ayudamos. Sin sorpresas y sin trabajo infinito.</b> Un solo plan, para sistemas y páginas web. Las invitaciones digitales no llevan plan de soporte.</p>
+
+    <div class="support-grid" style="max-width:640px;margin:0 auto;">
+      <section class="plan pro">
+        <span class="tag pro">★ Un solo plan para todo</span>
+        <h3>Soporte Update Soft</h3>
+        <p class="tagline">Tu sistema y tu sitio siempre al día y trabajando</p>
+        <div class="price"><span class="pval" data-mxn="199" data-per=" / mes">$199 / mes</span></div>
+        <div class="price-usd"><b class="altval" data-mxn="199" data-per=" / mes">$10 USD / mes</b></div>
+        <div class="per">Si lo pagas por año: <span class="pval" data-mxn="1990" data-per=" / año">$1,990 MXN / año</span> (<span class="altval" data-mxn="1990" data-per=" / año">$103 USD / año</span>) — pagas 10 meses, 2 gratis.</div>
+        <ul class="feat">
+          <li>Corrección de <b>errores</b> de tu sitio o sistema</li>
+          <li>Ayuda para <b>usar cada función</b>, paso a paso</li>
+          <li>Cambios de <b>configuración</b>: precios, platillos, usuarios, servicios y categorías</li>
+          <li><b>Respuesta prioritaria en 24 h</b> por WhatsApp</li>
+          <li><b>1 sesión de capacitación al mes</b> para ti y tu equipo</li>
+          <li>Revisión de tu sistema para que siempre trabaje bien</li>
+        </ul>
+        <div class="note" style="margin:0 0 14px;">🎁 <b>Incluido gratis según tu compra:</b> SaaS mensual 30 días · anual 60 días · pago único 90 días · página web y reservación 30 días · invitaciones: cambios incluidos hasta el día de tu evento, sin mensualidad.</div>
+        <div class="actions">
+          <a class="btn btn-wa btn-sm" href="https://wa.me/5215517050861?text=Hola%2C%20quiero%20informaci%C3%B3n%20del%20Plan%20de%20Soporte%20Update%20Soft">💬 Contratar el soporte</a>
+        </div>
+      </section>
+    </div>
+
+    <div class="cover-grid" style="margin-top:18px;">
+      <div class="cover yes">
+        <h3>✓ Qué SÍ cubre el soporte</h3>
+        <ul>
+          <li><b>Corrección de errores</b>: si algo deja de funcionar, lo arreglamos</li>
+          <li><b>Ayuda para usar cada función</b> de tu sistema o tu sitio</li>
+          <li><b>Cambios de configuración</b>: precios, platillos, usuarios, servicios y categorías</li>
+          <li><b>Capacitación inicial</b> (1 sesión) para que aprendas a usarlo</li>
+          <li><b>Respaldo y recuperación</b> si algo falla por causa del sistema</li>
+        </ul>
+      </div>
+      <div class="cover no">
+        <h3>✕ Qué NO cubre (se cotiza aparte)</h3>
+        <ul>
+          <li>Funciones nuevas <b>a la medida</b></li>
+          <li><b>Rediseño</b> del sitio o del sistema</li>
+          <li><b>Migración de datos</b> desde otro sistema</li>
+          <li><b>Capacitación adicional</b> fuera de la incluida</li>
+          <li>Hardware: tablets, impresoras, terminales</li>
+          <li>Soporte <b>fuera de horario</b></li>
+          <li>Cambios <b>ilimitados</b> de diseño</li>
+        </ul>
+      </div>
+    </div>
+    <p class="mini-note" style="text-align:center;">💡 <b>Anual y pago único del SaaS</b> incluyen además actualizaciones con funciones nuevas, beneficios y promociones exclusivas. El plan mensual no las incluye. · <b>Invitaciones digitales:</b> los cambios van incluidos hasta el día de tu evento, sin plan de soporte ni mensualidad.</p>
+  </section>
+
+  <!-- ============ PREGUNTAS FRECUENTES ============ -->
+  <section class="block" id="preguntas">
+    <div class="eyebrow">Dudas comunes</div>
+    <h2>Preguntas <span>frecuentes</span></h2>
+    <p class="lead">Lo que nos preguntan todos antes de contratar.</p>
+    <div class="faq">
+      <details>
+        <summary>¿Cómo pago?</summary>
+        <p>Lo acordamos por WhatsApp al cotizar. El sistema SaaS se puede pagar <b>de contado o en 3 o 6 pagos</b>; la instalación siempre va con el primer pago. Los demás servicios son de <b>pago único</b>.</p>
+      </details>
+      <details>
+        <summary>¿Cuánto tarda la entrega?</summary>
+        <p>Depende del proyecto. Al cotizarte te decimos <b>la fecha exacta de entrega antes de que pagues nada</b>, por escrito y sin sorpresas.</p>
+      </details>
+      <details>
+        <summary>¿Qué pasa si dejo de pagar la renta mensual?</summary>
+        <p>El acceso al sistema <b>se pausa hasta que te pongas al corriente</b>; escríbenos y lo reactivamos. Si compraste el sistema de una vez, <b>es tuyo para siempre</b> y solo pagas el hosting desde el 2º año.</p>
+      </details>
+      <details>
+        <summary>¿Qué incluye la instalación?</summary>
+        <p>Dejamos tu sistema funcionando: lo configuramos con <b>tus productos, precios y usuarios</b>, y te damos <b>una sesión de capacitación</b> para aprender a usarlo.</p>
+      </details>
+      <details>
+        <summary>¿El pago único es de verdad para siempre?</summary>
+        <p>Sí. Compras el sistema <b>una sola vez y es tuyo</b>; solo pagas el hosting desde el 2º año (<span class="pval" data-mxn="1500" data-per=" MXN/año">$1,500 MXN/año</span>) y el soporte si lo quieres contratar.</p>
+      </details>
+      <details>
+        <summary>¿Puedo ver una demo antes de contratar?</summary>
+        <p>Sí. Cada servicio tiene su <b>demo en vivo en esta misma página</b>: mírala con calma y luego nos escribes por WhatsApp.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ CIERRE ============ -->
+  <section class="closing">
+    <h2>¿Listo para que tu negocio <span>venda más?</span></h2>
+    <p>Escríbenos por WhatsApp, cuéntanos qué necesitas y te cotizamos el tuyo sin compromiso.</p>
+    <a class="btn btn-wa" href="https://wa.me/5215517050861?text=Hola%2C%20me%20interesa%20un%20servicio%20de%20Update%20Soft">💬 Cotiza el tuyo por WhatsApp</a>
+    <p class="zones">📍 <b>Zona de servicio:</b> Nicolás Romero, Tlalnepantla, Villa del Carbón y CDMX (Azcapotzalco, San Joaquín y alrededores)<br>📱 WhatsApp <b>5517050861</b> · Update Soft — Sistemas y páginas web para negocios pequeños</p>
+  </section>
+
+  <footer>
+    Precios en pesos mexicanos (MXN). <span id="fx-foot">Precios en dólares (USD) al tipo de cambio de <b>$19.40 MXN por dólar</b> · Actualizado 25 nov 2026.</span><br>
+    Los planes y precios pueden cambiar; confirma tu cotización por WhatsApp antes de contratar.<br>
+    Los ejemplos mostrados son muestras de lo que Update Soft puede construir para tu negocio.
+  </footer>
+
 </div>
 
+<a class="wa-float" href="https://wa.me/5215517050861?text=Hola%2C%20me%20interesa%20un%20servicio%20de%20Update%20Soft" aria-label="Escríbenos por WhatsApp">💬</a>
+
 <script>
-  (function () {
-    var btns = document.querySelectorAll('.tab-btn');
-    var panels = document.querySelectorAll('.panel');
-    function show(id) {
-      btns.forEach(function (b) { b.classList.toggle('active', b.dataset.tab === id); });
-      panels.forEach(function (p) { p.classList.toggle('active', p.id === 'panel-' + id); });
-      if (location.hash !== '#' + id) { history.replaceState(null, '', '#' + id); }
+(function () {
+  var FALLBACK_RATE = 19.40;
+  var rate = FALLBACK_RATE;
+  var currency = "mxn";
+
+  function fmtMXN(mxn) { return "$" + Number(mxn).toLocaleString("es-MX"); }
+  function fmtUSD(mxn, r) { return "$" + Math.round(mxn / r).toLocaleString("en-US") + " USD"; }
+
+  function renderEl(el) {
+    var mxn = parseFloat(el.getAttribute("data-mxn"));
+    if (isNaN(mxn)) return;
+    var per = el.getAttribute("data-per") || "";
+    var isAlt = el.classList.contains("altval");
+    var isLab = el.classList.contains("pval-lab");
+    var cur = isAlt ? (currency === "mxn" ? "usd" : "mxn") : currency;
+    if (cur === "mxn") {
+      el.textContent = fmtMXN(mxn) + (isLab ? " MXN" : (isAlt ? " MXN" : "")) + per;
+    } else {
+      el.textContent = fmtUSD(mxn, rate) + per;
     }
-    btns.forEach(function (b) {
-      b.addEventListener('click', function () { show(b.dataset.tab); });
-    });
-    var start = (location.hash || '#pos').replace('#', '');
-    if (!document.getElementById('panel-' + start)) { start = 'pos'; }
-    show(start);
-  })();
+  }
+  function renderPrices() {
+    var els = document.querySelectorAll("[data-mxn]");
+    for (var i = 0; i < els.length; i++) renderEl(els[i]);
+  }
+  function fmtFecha(d) {
+    return d.toLocaleDateString("es-MX", { day: "numeric", month: "short", year: "numeric" });
+  }
+  function setFxLine(r, when) {
+    var d = when ? new Date(when) : new Date();
+    var txt = "Tipo de cambio: <b>$" + r.toFixed(2) + " MXN por USD</b> · Actualizado " + fmtFecha(d);
+    var line = document.getElementById("fx-line");
+    var foot = document.getElementById("fx-foot");
+    if (line) line.innerHTML = txt;
+    if (foot) foot.innerHTML = "Precios en dólares (USD) al tipo de cambio de <b>$" + r.toFixed(2) + " MXN por dólar</b> · Actualizado " + fmtFecha(d) + ".";
+  }
+
+  /* ---- Toggle MXN / USD ---- */
+  var toggleBtns = document.querySelectorAll(".cur-toggle button");
+  function setCurrency(c) {
+    currency = c;
+    for (var i = 0; i < toggleBtns.length; i++) {
+      var b = toggleBtns[i];
+      var on = b.getAttribute("data-cur") === c;
+      b.classList.toggle("active", on);
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+    renderPrices();
+  }
+  for (var i = 0; i < toggleBtns.length; i++) {
+    toggleBtns[i].addEventListener("click", function () { setCurrency(this.getAttribute("data-cur")); });
+  }
+  try {
+    var q = new URLSearchParams(window.location.search).get("cur");
+    if (q === "usd" || q === "mxn") currency = q;
+  } catch (e) { /* sin soporte de URLSearchParams: se queda en MXN */ }
+
+  /* ---- Menú hamburguesa (drawer) ---- */
+  var burger = document.getElementById("burger");
+  var drawer = document.getElementById("drawer");
+  var overlay = document.getElementById("overlay");
+  var drawerClose = document.getElementById("drawer-close");
+  var lastFocus = null;
+  function openDrawer() {
+    lastFocus = document.activeElement;
+    drawer.classList.add("open");
+    overlay.classList.add("show");
+    burger.classList.add("open");
+    burger.setAttribute("aria-expanded", "true");
+    burger.setAttribute("aria-label", "Cerrar menú");
+    drawer.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+    if (drawerClose) drawerClose.focus();
+  }
+  function closeDrawer() {
+    drawer.classList.remove("open");
+    overlay.classList.remove("show");
+    burger.classList.remove("open");
+    burger.setAttribute("aria-expanded", "false");
+    burger.setAttribute("aria-label", "Abrir menú");
+    drawer.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  if (burger) burger.addEventListener("click", function () {
+    if (drawer.classList.contains("open")) closeDrawer(); else openDrawer();
+  });
+  if (drawerClose) drawerClose.addEventListener("click", closeDrawer);
+  if (overlay) overlay.addEventListener("click", closeDrawer);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && drawer.classList.contains("open")) closeDrawer();
+  });
+  var drawerLinks = drawer.querySelectorAll("a[href^='#']");
+  for (var j = 0; j < drawerLinks.length; j++) {
+    drawerLinks[j].addEventListener("click", closeDrawer);
+  }
+
+  /* ---- Tipo de cambio en vivo (con respaldo silencioso) ---- */
+  renderPrices();
+  setFxLine(rate, null);
+  setCurrency(currency);
+  if (window.fetch) {
+    fetch("https://open.er-api.com/v6/latest/USD", { cache: "no-store" })
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (j) {
+        if (j && j.rates && j.rates.MXN) {
+          rate = j.rates.MXN;
+          renderPrices();
+          setFxLine(rate, j.time_last_update_utc);
+        }
+      })
+      .catch(function () { /* sin internet: se queda el respaldo, mismo texto limpio */ });
+  }
+})();
 </script>
 </body>
 </html>
